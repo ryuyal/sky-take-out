@@ -51,7 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
+        //进行md5加密，然后再进行比对
         password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             //密码错误
@@ -73,15 +73,21 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void save(EmployeeDTO employeeDTO) {
+//        System.out.println("当前线程id（save方法中）：" + Thread.currentThread().getId());
+
         Employee employee = new Employee();
+        // 对象属性拷贝
         BeanUtils.copyProperties(employeeDTO, employee);
 
+        // 设置账号状态，默认正常状态
         employee.setStatus(StatusConstant.ENABLE);
+        // 设置密码
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        // 创建时间和更新时间
         employee.setCreateTime(LocalDateTime.now());
         employee.setUpdateTime(LocalDateTime.now());
 
-        // TODO
+        // TODO 后期需要修改为当前登录用户的id
         employee.setCreateUser(BaseContext.getCurrentId());
         employee.setUpdateUser(BaseContext.getCurrentId());
 
